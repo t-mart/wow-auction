@@ -1,0 +1,106 @@
+version: "3.9"
+
+services:
+
+  wow-auction:
+    container_name: wow-auction
+    restart: unless-stopped
+    build:
+      context: .
+    volumes:
+      - type: bind
+        source: ./cache/
+        target: /cache/
+    environment:
+      # the BLIZZ_CLIENT vars are gathered from the host. so, make sure they're
+      # set when `docker compose ...` is run, or stuff them in the .env file
+      # (see template.env too for a template)
+      - WOWAUCTION_BLIZZ_CLIENT_ID=${WOWAUCTION_BLIZZ_CLIENT_ID}
+      - WOWAUCTION_BLIZZ_CLIENT_SECRET=${WOWAUCTION_BLIZZ_CLIENT_SECRET}
+      - WOWAUCTION_VMAGENT_HOST=vmagent
+      - WOWAUCTION_VMAGENT_PORT=8429
+      - WOWAUCTION_CACHE_PATH=/cache/item.db
+    image: wow-auction
+    networks:
+      - wow-auction-network
+
+  vmagent:
+    container_name: wow-auction-vmagent
+    restart: unless-stopped
+    image: victoriametrics/vmagent
+    ports:
+      - target: 8429
+        published: 9429
+        protocol: tcp
+        mode: host
+    volumes:
+      - type: volume
+        source: vmagent-storage
+        target: /vmagentdata
+    command:
+      - "--remoteWrite.url=http://victoriametrics:8428/api/v1/write"
+    depends_on:
+      - victoriametrics
+    networks:
+      - wow-auction-network
+
+  victoriametrics:
+    container_name: wow-auction-victoriametrics
+    restart: unless-stopped
+    image: victoriametrics/victoria-metrics
+    ports:
+      - target: 8428
+        published: 9428
+        protocol: tcp
+        mode: host
+    volumes:
+      - type: volume
+        source: victoriametrics-storage
+        target: /storage
+    command:
+      - "--storageDataPath=/storage"
+      - "--httpListenAddr=:8428"
+      - "--retentionPeriod=3"
+    networks:
+      - wow-auction-network
+
+  grafana:
+    container_name: wow-auction-grafana
+    restart: unless-stopped
+    image: grafana/grafana
+    ports:
+      - target: 3000
+        published: 3001
+        protocol: tcp
+        mode: host
+    depends_on:
+      - victoriametrics
+    volumes:
+      - type: bind
+        source: ./grafana/config/grafana.ini
+        target: /etc/grafana/grafana.ini
+        read_only: true
+      - type: bind
+        source: ./grafana/provisioning/
+        target: /etc/grafana/provisioning
+      - type: bind
+        source: ./grafana/dashboards/
+        target: /etc/dashboards
+        read_only: true
+      - type: volume
+        source: grafana-storage
+        target: /var/lib/grafana
+    networks:
+      - wow-auction-network
+
+volumes:
+  grafana-storage:
+    name: wow-auction-grafana-storage
+  victoriametrics-storage:
+    name: wow-auction-victoriametrics-storage
+  vmagent-storage:
+    name: wow-auction-vmagent-storage
+
+networks:
+  wow-auction-network:
+    name: wow-auction-network
