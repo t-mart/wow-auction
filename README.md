@@ -20,7 +20,7 @@ auction house access. These things have good trade volume, and you can make some
 
 1. Pull all the auctions on Blizzard's WoW commodity endpoint at
    [/data/wow/auctions/commodities](https://develop.battle.net/documentation/world-of-warcraft/game-data-apis).
-2. Because these auctions have only item IDs, fill in the name, quality, tier, etc from our sqlite
+2. Because these auctions have only item IDs, fill in the name, quality, rank, etc from our sqlite
    cache, stored at `cache/item.db`. To fill the cache for the first time, we scrape Wowhead. Note
    the cache is persisted to disk, so we only will have to scrape once per item.
 3. Insert the populated auctions into VictoriaMetrics, our metrics backend.
@@ -29,10 +29,12 @@ auction house access. These things have good trade volume, and you can make some
 
 ## Item "Rank"?
 
-You know... the new system in Dragonflight where items can be of varying quality/rank/tier.
+You know... the new system in Dragonflight where a given item can be of a different
+quality/rank/tier. The higher the quality/rank/tier, the better the item (or outcome if used as a
+reagent).
 
 Even Blizzard can't figure out what they want to call this. In tooltips, they call it "quality",
-but that term already has a definition: poor/common/uncommon/rare/epic/etc.
+but that term is already defined: poor/common/uncommon/rare/epic/etc.
 
 Many players call it _rank_, so we'll use that.
 
