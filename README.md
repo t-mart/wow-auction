@@ -12,7 +12,7 @@ auction house access. These things have good trade volume, and you can make some
    Blizzard Client API ID and secret, which you can create
    [here](https://develop.battle.net/access/clients).
 2. Run `make up` to start the docker compose. Once the item cache is filled in (this repo ships with
-   a prepopulated one by default), then navigate to <https://localhost:3000>.
+   a prepopulated one by default), then navigate to <http://localhost:3001>.
 
    `make down` and `make restart` shut down and restart the containers.
 
