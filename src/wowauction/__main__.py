@@ -70,7 +70,7 @@ async def inner_loop(
             async for auction in blizzard_api.get_commodity_auctions(cache=cache):
                 await vmagent_api.export(auction=auction)
                 auction_count += 1
-            print(f"exported {auction_count} to vmagent")
+            print(f"exported {auction_count:,} auctions to vmagent")
 
 
 if __name__ == "__main__":
