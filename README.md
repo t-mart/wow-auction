@@ -40,9 +40,9 @@ Many players call it _rank_, so we'll use that.
 
 For example: Serevite Ore
 
-- Rank 1: https://www.wowhead.com/item=190395/serevite-ore
-- Rank 2: https://www.wowhead.com/item=190396/serevite-ore
-- Rank 3: https://www.wowhead.com/item=190394/serevite-ore
+- Rank 1: <https://www.wowhead.com/item=190395/serevite-ore>
+- Rank 2: <https://www.wowhead.com/item=190396/serevite-ore>
+- Rank 3: <https://www.wowhead.com/item=190394/serevite-ore>
 
 Note: These are 1-indexed (while quality is 0-indexed).
 
