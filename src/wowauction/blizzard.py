@@ -20,6 +20,7 @@ class BlizzardAPI:
             auth=(self.client_id, self.client_secret),
         )
         response_json = token_response.json()
+        print("got POST https://oauth.battle.net/token")
 
         access_token = response_json["access_token"]
 
@@ -31,6 +32,7 @@ class BlizzardAPI:
                 "access_token": access_token,
             },
         )
+        print("got GET https://us.api.blizzard.com/data/wow/auctions/commodities")
 
         access_time = arrow.get().timestamp()
 

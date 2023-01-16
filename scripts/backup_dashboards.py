@@ -20,7 +20,7 @@ CLIENT = httpx.Client()
 DASHBOARD_PATH = Path(__file__).parent.parent / "grafana" / "dashboards"
 
 # published port for grafana
-GRAFANA_ROOT_URL = "http://localhost:3000/"
+GRAFANA_ROOT_URL = "http://localhost:3001/"
 DASHBOARD_SEARCH_URL = f"{GRAFANA_ROOT_URL}api/search"
 
 

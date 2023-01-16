@@ -5,7 +5,7 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
 
-from attrs import frozen
+from attrs import field, frozen
 
 from wowauction.item import Item
 from wowauction.wowhead import lookup as wowhead_lookup
@@ -14,6 +14,11 @@ from wowauction.wowhead import lookup as wowhead_lookup
 @frozen
 class Cache:
     con: sqlite3.Connection
+
+    # i see that you like caches, we put a cache in your cache so you can cache while
+    # you cache.
+    # so, the hierarchy is: in-memory cache, sqlite, wowhead
+    in_memory: dict[str, Item] = field(factory=dict)
 
     @classmethod
     def _create_tables(cls, con: sqlite3.Connection) -> None:
@@ -45,6 +50,9 @@ class Cache:
         con.close()
 
     def get(self, id_: str) -> Item | None:
+        if id_ in self.in_memory:
+            return self.in_memory[id_]
+
         with self.con:
             result = self.con.execute(
                 """
@@ -55,7 +63,7 @@ class Cache:
             )
             if (row := result.fetchone()) is None:
                 return None
-            return Item(
+            item = Item(
                 id_=id_,
                 name=row["name"],
                 quality=row["quality"],
@@ -65,6 +73,8 @@ class Cache:
                 patch=row["patch"],
                 build=row["build"],
             )
+            self.in_memory[id_] = item
+            return item
 
     def insert(self, item: Item) -> None:
         with self.con:
@@ -84,6 +94,7 @@ class Cache:
                     "build": item.build,
                 },
             )
+        self.in_memory[item.id_] = item
 
     async def get_or_lookup(self, id_: str) -> Item:
         cached = self.get(id_=id_)

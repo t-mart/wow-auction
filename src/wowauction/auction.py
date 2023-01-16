@@ -12,7 +12,7 @@ from wowauction.cache import Cache
 @frozen
 class Auction:
     item: Item
-    price_gold: Decimal
+    price_gold: float
     quantity: int
     time_left: Literal["SHORT", "MEDIUM", "LONG", "VERY_LONG"]
     timestamp: float
@@ -33,13 +33,14 @@ class Auction:
         )
 
     @property
-    def time_left_num(self) -> int:
+    def time_left_minutes(self) -> int:
+        """The upper bound in minutes on the time left in an auction"""
         match self.time_left:
             case "SHORT":
-                return 1
+                return 30
             case "MEDIUM":
-                return 2
+                return 60 * 2
             case "LONG":
-                return 3
+                return 60 * 12
             case "VERY_LONG":
-                return 4
+                return 60 * 48

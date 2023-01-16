@@ -1,11 +1,9 @@
 FROM python:3.11-slim
 
-# rich's log output defaults to super small 80 otherwise
-ENV COLUMNS=200
-
 WORKDIR /app
 
-# cache deps
+# cache deps, so that we don't need to redownload each time we have a code
+# change (and thus, will be rebuilding the image)
 COPY requirements.txt /app
 RUN set -ex \
     && pip install -r /app/requirements.txt
