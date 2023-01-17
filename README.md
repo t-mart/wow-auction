@@ -1,10 +1,13 @@
 # wow-auction
 
+![Demo](doc/demo.png)
+
 A set of Grafana dashboards for World of Warcraft _commodities_. Goal is to look like stock charts.
 
-As far as I can tell, _commodities_ are things that are commonly sold and that have cross-realm
-auction house access. These things have good trade volume, and you can make some good money on them
-🤞.
+Blizzard calls these items _commodities_, and they have a special API endpoint and are able to be
+traded cross-realm. These seem to be the lifeblood of the economy.
+
+For the charts, I focus on reagents.
 
 ## Running
 
